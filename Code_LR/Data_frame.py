@@ -1,75 +1,83 @@
-from __future__ import division, print_function, unicode_literals
+# from __future__ import division, print_function, unicode_literals
 from sklearn import preprocessing
 import numpy as np  
 import pandas as pd
 import matplotlib
 import matplotlib.pyplot as plt 
 from sklearn.preprocessing import StandardScaler
-from sklearn import datasets,linear_model 
+import seaborn as sns
+from sklearn import datasets,linear_model
+from sklearn.metrics import mean_squared_error
+# from sklearn.utils.validation import column_or_1d
+
+# df = pd.read_csv('data/Admission_Predict.csv') 
+
+# fig = sns.distplot(df['GRE Score'], kde=False)
+# plt.title("Distribution of GRE Scores")
+# plt.show()
+
+# fig = sns.distplot(df['TOEFL Score'], kde=False)
+# plt.title("Distribution of TOEFL Scores")
+# plt.show()
+
+# fig = sns.distplot(df['University Rating'], kde=False)
+# plt.title("Distribution of University Rating")
+# plt.show()
+
+# fig = sns.distplot(df['SOP'], kde=False)
+# plt.title("Distribution of SOP Ratings")
+# plt.show()
+
+# fig = sns.distplot(df['CGPA'], kde=False)
+# plt.title("Distribution of CGPA")
+# plt.show()
+
+# plt.show()
+
+# fig = sns.regplot(x="GRE Score", y="TOEFL Score", data=df)
+# plt.title("GRE Score vs TOEFL Score")
+# plt.show()
+
+# sns.pairplot(df)
+# plt.show()
 
 # Đọc file data(csv)
 data_frame = pd.read_csv('data/data_train.csv').values
 data = data_frame[:, 1:9]
 # print(data)
-scaler = StandardScaler()
+# chance_of_admit = data_frame[:, -1].reshape(-1, 1)
+# print(Y_train)
+# data_train = data_frame[:, 1:8]
+# print(data_train) 
 
+# Normalize
+scaler = StandardScaler()
 scaler.fit(data)
 data_norm = scaler.fit_transform(data)
 # print(data_norm)
-chance_of_admit = data_norm[:, -1].reshape(-1, 1)
-# print(chance_of_admit)
-data_train = data_norm[:, 0:7]
 
-# print(data_train)
+chance_of_admit = data_norm[:, -1].reshape(-1, 1)
+# print(chance_of_admit.shape)
+data_train = data_norm[:, 0:7]
+# print(data_train.shape)
+
 # Đếm số các case
 N = data_frame.shape[0]
 # add_data = np.ones((N,1))
+# Add 1
 data1 = np.hstack((np.ones((N, 1)), data_train))
-# print(data1)
-# print(data1[0])
+# print(data1.shape)
 
-# print(chance_of_admit)
-# # Chọn cột và reshape lại 
-# gre_score = data_frame[:, 1].reshape(-1, 1)
-# # mean = np.mean(gre_score)
-# # std = np.std(gre_score)
-# # gre_score_nor = (gre_score-mean)/std
-# gre = gre_score/np.linalg.norm(gre_score)
-# gre_score_nor = preprocessing.scale(gre_score)
-# print(gre_score_nor)
-# tofel_score = data_frame[:, 2].reshape(-1, 1)
-# tofel_score = preprocessing.scale(tofel_score)
-# university_rating = data_frame[:, 3].reshape(-1, 1)
-# university_rating = preprocessing.scale(university_rating)
-# sop = data_frame[:, 4].reshape(-1, 1)
-# sop = preprocessing.scale(sop)
-# lor = data_frame[:, -4].reshape(-1, 1)
-# lor = preprocessing.scale(lor)
-# cgpa = data_frame[:, -3].reshape(-1, 1)
-# cgpa = preprocessing.scale(cgpa)
-# research = data_frame[:, -2].reshape(-1, 1)
-# research = preprocessing.scale(research)
-# chance_of_admit = data_frame[:, -1].reshape(-1, 1)
-# chance_of_admit = preprocessing.scale(chance_of_admit)
 
 
 # code of me
-
-
 w = np.random.randn(8)
+# print(w.reshape(-1,1).shape)
 number_of_iteration = 10000
 learning_rate = 0.0001
 cost = np.zeros((number_of_iteration,1))
 
-# print(w.T)
-# print(w.reshape(-1,1))
-# y_train = np.dot(data1, w.reshape(-1,1))
-# r = chance_of_admit - y_train
-# print(y_train)
-# A = (1./N)*np.sum(np.multiply(r, data1[:,1].reshape(-1,1)))
-# print(A)
-# print(data1, data1[:,1].reshape(-1,1))
-
+# Gradient Descent
 for i in range(1, number_of_iteration):
     y_train = np.dot(data1, w.reshape(-1,1))
     r = y_train - chance_of_admit
@@ -84,6 +92,8 @@ for i in range(1, number_of_iteration):
     w[7] -= learning_rate*(1./N)*np.sum(np.multiply(r, data1[:,7].reshape(-1,1)))
     print(cost[i])
 print(w)
+
+
 # Normal Equation
 # A = np.dot(data1.T, data1)
 # b = np.dot(data1.T, chance_of_admit)
@@ -92,6 +102,40 @@ print(w)
 
 
 # using Sklearn library
-regr = linear_model.LinearRegression(fit_intercept=False)
-regr.fit(data1,chance_of_admit)
-print('Solution found by scikit-learn: ',regr.coef_) 
+# regr = linear_model.LinearRegression(fit_intercept=False)
+# regr.fit(data_train, chance_of_admit)
+# # print(data_train.shape, chance_of_admit.shape, regr.coef_.shape)
+# print('Solution found by scikit-learn: ',regr.coef_)
+# # y_pred = np.matmul(data_, regr.coef_.T)
+# print(regr.score(data_train, chance_of_admit), cost[number_of_iteration-1])
+
+clf = linear_model.SGDRegressor(max_iter=10000, learning_rate='adaptive', eta0=0.0001)
+# chance_of_admit = column_or_1d(chance_of_admit, warn=True)
+clf.fit(data_train, chance_of_admit)
+print('Solution found by scikit-learn: ',clf.coef_)
+print(clf.score(data_train, chance_of_admit), cost[number_of_iteration-1])
+
+# Test
+df_test = pd.read_csv('data/data_test.csv').values
+data_test = df_test[:, 1:9]
+# print(data_test)
+# Normalize
+scaler = StandardScaler()
+scaler.fit(data_test)
+data_test_norm = scaler.fit_transform(data_test)
+# y_test
+y_test = data_test_norm[:, -1].reshape(-1, 1)
+# print(y_test)
+M = data_test.shape[0]
+# print(M)
+data__ = data_test_norm[:, 0:7]
+# print(data__)
+data = np.hstack((np.ones((M, 1)),data__))
+y_pred = np.dot(data, w.T)
+# print(y_pred)
+r_test = y_pred - y_test
+Loss = (0.5/M)*np.sum(r_test*r_test)
+
+clf_test = linear_model.SGDRegressor(max_iter=10000, learning_rate='adaptive', eta0=0.0001)
+clf_test.fit(data_test_norm, y_test)
+print(clf_test.score(data_test_norm, y_test), Loss)
