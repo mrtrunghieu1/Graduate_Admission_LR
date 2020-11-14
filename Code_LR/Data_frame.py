@@ -76,12 +76,14 @@ w = np.random.randn(8)
 number_of_iteration = 10000
 learning_rate = 0.0001
 cost = np.zeros((number_of_iteration,1))
-
+# w = np.expand_dims(w,0)
 # Gradient Descent
+
 for i in range(1, number_of_iteration):
-    y_train = np.dot(data1, w.reshape(-1,1))
+    y_train = np.matmul(data1, w.reshape(-1,1))
     r = y_train - chance_of_admit
     cost[i] = (0.5/N)*np.sum(r*r)
+    # w -= learning_rate*1./N*np.matmul(r.T, data1)
     w[0] -= learning_rate*(1./N)*np.sum(r)
     w[1] -= learning_rate*(1./N)*np.sum(np.multiply(r, data1[:,1].reshape(-1,1)))
     w[2] -= learning_rate*(1./N)*np.sum(np.multiply(r, data1[:,2].reshape(-1,1)))
@@ -131,7 +133,7 @@ M = data_test.shape[0]
 data__ = data_test_norm[:, 0:7]
 # print(data__)
 data = np.hstack((np.ones((M, 1)),data__))
-y_pred = np.dot(data, w.T)
+y_pred = np.matmul(data, w.reshape(-1,1))
 # print(y_pred)
 r_test = y_pred - y_test
 Loss = (0.5/M)*np.sum(r_test*r_test)
