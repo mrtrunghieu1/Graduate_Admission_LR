@@ -8,7 +8,7 @@ from sklearn.preprocessing import StandardScaler
 import seaborn as sns
 from sklearn import datasets,linear_model
 from sklearn.metrics import mean_squared_error
-# from sklearn.utils.validation import column_or_1d
+
 
 # df = pd.read_csv('data/Admission_Predict.csv') 
 
@@ -73,32 +73,33 @@ data1 = np.hstack((np.ones((N, 1)), data_train))
 # code of me
 w = np.random.randn(8)
 # print(w.reshape(-1,1).shape)
-number_of_iteration = 10000
+number_of_iteration = 100000
 learning_rate = 0.0001
 cost = np.zeros((number_of_iteration,1))
-# w = np.expand_dims(w,0)
+w = np.expand_dims(w,0)
 # Gradient Descent
 
 for i in range(1, number_of_iteration):
     y_train = np.matmul(data1, w.reshape(-1,1))
     r = y_train - chance_of_admit
     cost[i] = (0.5/N)*np.sum(r*r)
-    # w -= learning_rate*1./N*np.matmul(r.T, data1)
-    w[0] -= learning_rate*(1./N)*np.sum(r)
-    w[1] -= learning_rate*(1./N)*np.sum(np.multiply(r, data1[:,1].reshape(-1,1)))
-    w[2] -= learning_rate*(1./N)*np.sum(np.multiply(r, data1[:,2].reshape(-1,1)))
-    w[3] -= learning_rate*(1./N)*np.sum(np.multiply(r, data1[:,3].reshape(-1,1)))
-    w[4] -= learning_rate*(1./N)*np.sum(np.multiply(r, data1[:,4].reshape(-1,1)))
-    w[5] -= learning_rate*(1./N)*np.sum(np.multiply(r, data1[:,5].reshape(-1,1)))
-    w[6] -= learning_rate*(1./N)*np.sum(np.multiply(r, data1[:,6].reshape(-1,1)))
-    w[7] -= learning_rate*(1./N)*np.sum(np.multiply(r, data1[:,7].reshape(-1,1)))
+    w -= learning_rate*1./N*np.matmul(r.T, data1)
+    # w[0] -= learning_rate*(1./N)*np.sum(r)
+    # w[1] -= learning_rate*(1./N)*np.sum(np.multiply(r, data1[:,1].reshape(-1,1)))
+    # w[2] -= learning_rate*(1./N)*np.sum(np.multiply(r, data1[:,2].reshape(-1,1)))
+    # w[3] -= learning_rate*(1./N)*np.sum(np.multiply(r, data1[:,3].reshape(-1,1)))
+    # w[4] -= learning_rate*(1./N)*np.sum(np.multiply(r, data1[:,4].reshape(-1,1)))
+    # w[5] -= learning_rate*(1./N)*np.sum(np.multiply(r, data1[:,5].reshape(-1,1)))
+    # w[6] -= learning_rate*(1./N)*np.sum(np.multiply(r, data1[:,6].reshape(-1,1)))
+    # w[7] -= learning_rate*(1./N)*np.sum(np.multiply(r, data1[:,7].reshape(-1,1)))
     print(cost[i])
 print(w)
 
 
 # Normal Equation
 # A = np.dot(data1.T, data1)
-# b = np.dot(data1.T, chance_of_admit)
+# b = np.dot(dat
+# data1.T, chance_of_admit)
 # w1 = np.dot(np.linalg.pinv(A), b)
 # print(w1)
 
