@@ -22,7 +22,7 @@ X, mu, sigma = features_normalize(X)
 X = np.hstack((np.ones((X.shape[0], 1)), X))
 
 print('Running gradient descent ...')
-alpha = 0.1
+alpha = 0.001
 num_iters = 50
 
 W = np.zeros((X.shape[1], 1))
@@ -31,5 +31,5 @@ W, J_history = gradient_descent(X, y, W, alpha, num_iters)
 print('Parameters: \n', W)
 print(J_history)
 plt.plot(np.array(range(1, num_iters + 1)), J_history, linewidth=2)
-
+plt.show()
 
