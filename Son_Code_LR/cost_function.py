@@ -11,7 +11,7 @@ def cost_function(X, y, W):
     m = y.shape[0] # number of examples
     J = 0 # initial cost
     predictions = np.dot(X, W)
-    square_error = np.dot((predictions - y).T, predictions - y) 
+    square_error = np.dot((predictions - y).T, predictions - y)
     J = np.sum(square_error) * (1/(2*m))
     
     return J

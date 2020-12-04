@@ -17,13 +17,15 @@ print(y[:10])
 
 print('Normalizing Features ...')
 X, mu, sigma = features_normalize(X)
+print('X after normalization: ')
+print(X)
 
 # Add biases to X
 X = np.hstack((np.ones((X.shape[0], 1)), X))
 
 print('Running gradient descent ...')
-alpha = 0.001
-num_iters = 50
+alpha = 0.0001 # change this
+num_iters = 5000 # change this
 
 W = np.zeros((X.shape[1], 1))
 W, J_history = gradient_descent(X, y, W, alpha, num_iters)
